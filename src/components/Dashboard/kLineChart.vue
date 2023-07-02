@@ -35,7 +35,6 @@ export default {
         values: values
       };
     },
-
     renderItem(params, api) {
       var xValue = api.value(0);
       var openPoint = api.coord([xValue, api.value(1)]);
@@ -84,7 +83,7 @@ export default {
     },
 
     getData() {
-        var data = this.splitData(staticData);
+      var data = this.splitData(staticData);
       myChart.setOption(
         (this.option = {
           animation: false,
@@ -185,6 +184,9 @@ export default {
   mounted() {
     myChart = echarts.init(document.getElementById("kLine"));
     this.getData();
+    window.onresize = () => {
+      myChart.resize();
+    };
     // myChart.setOption(this.option);
   },
   beforeCreate() {}, //生命周期 - 创建之前
@@ -198,7 +200,7 @@ export default {
 </script>
 
 <template>
-  <div id="kLine" style="height: 350px;"></div>
+  <div id="kLine" style="width: 100%;height:600px;"></div>
 </template>
 
 <style></style>

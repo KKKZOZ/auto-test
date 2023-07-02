@@ -14,6 +14,16 @@ module.exports = {
         assets: resolveSrc('src/assets')
       }
     }
+  }, devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        pathRewrite: {
+          '/api': ''
+        }
+      }
+    }
   },
   css: {
     // Enable CSS source maps.
