@@ -2,6 +2,9 @@
   <div>
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
       <!-- Card stats -->
+      <div class="mt--4 mt-md--8  mb-4 text-right">
+        <img src="../assets/start/second.png" v-shared-element:markImage="{duration:'2s'}" height="100"  style="text-right">
+    </div>
       <b-row>
         <b-col xl="3.5" md="6">
           <stats-card title="实时温度" type="gradient-red" :sub-title="temperature + '℃'" class="mb-4">

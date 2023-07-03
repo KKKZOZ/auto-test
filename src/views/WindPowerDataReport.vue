@@ -1,7 +1,10 @@
 <template>
   <div>
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 h-100" style="background-image: var(--gradient-22);">
-      <b-row class="justify-content-md-center">
+    <div class="mt--4 mt-md--8  mb-4 text-right">
+      <img src="../assets/start/first.png" v-shared-element:markImage="{duration:'2s'}" height="100"  style="text-right">
+  </div>  
+    <b-row class="justify-content-md-center">
         <b-col xl="3" lg="4" md="6">
           <div class="num-card my-2" style="background-color: var(--gray-0);">
             <b-row>

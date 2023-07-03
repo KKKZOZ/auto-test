@@ -2,8 +2,20 @@ import DashboardLayout from '@/views/Layout/DashboardLayout.vue';
 import AuthLayout from '@/views/Pages/AuthLayout.vue';
 
 import NotFound from '@/views/NotFoundPage.vue';
+import Start from '@/views/Start.vue';
 
 const routes = [
+  {
+    path: '/',
+    redirect: 'start',
+    name: 'start',
+    component: Start,
+    children: [
+      {
+        path: '/start',
+        name: 'start',
+      }]
+  },
   {
     path: '/',
     redirect: 'dataReport',
@@ -13,11 +25,6 @@ const routes = [
         path: '/dataReport',
         name: 'dataReport',
         component: () => import(/* webpackChunkName: "demo" */ '../views/WindPowerDataReport.vue')
-      },
-      {
-        path: '/start',
-        name: 'start',
-        component: () => import(/* webpackChunkName: "demo" */ '../views/Start.vue')
       },
       {
         path: '/realTimePre',

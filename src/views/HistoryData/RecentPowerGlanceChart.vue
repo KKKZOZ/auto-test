@@ -14,7 +14,7 @@
 
   
 <script>
-
+import historyDataApi from '../../api/HistoryData';
 export default {
     name: "recent-power-glance-chart",
     data() {
@@ -51,70 +51,25 @@ export default {
         this.textStyle = {};
         return {
             chartData: {
-                columns: ["风机型号", "第一月", "第二月","第三月"],
-                rows: [{
-                        风机型号: "风机01",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机02",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机03",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机04",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机05",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机06",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机07",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机08",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },{
-                        风机型号: "风机09",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    },
-                    {
-                        风机型号: "风机10",
-                        第一月: 1391,
-                        第二月: 1093,
-                        第三月: 3200
-                    }
-                ]
+                columns: [],
+                rows: []
             }
         };
     },
-    methods: {}
+    methods: {
+        // 获取数据
+        getChartData(){
+            historyDataApi.getRecentData().then((res) => {
+                console.log(res)
+                let chartData = res.data.data
+                this.chartData.columns = chartData.columns
+                this.chartData.rows = chartData.rows
+                console.log(this.chartData)
+            })
+        }
+    },
+    created(){
+        this.getChartData();
+    }
 };
 </script>

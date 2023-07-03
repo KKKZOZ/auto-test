@@ -1,6 +1,9 @@
 <template>
 <div>
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
+    <div class="mt--4 mt-md--8  mb-4 text-right">
+        <img src="../assets/start/forth.png" v-shared-element:markImage="{duration:'2s'}" height="100" style="text-right">
+    </div>
         <b-container fluid class="mt-2 rounded">
             <b-row>
                 <b-col>
@@ -60,7 +63,11 @@
             </b-col>
         </b-row>
     </b-container>
-
+    <b-container fluid class="mt-4">
+        <b-embed type="iframe" aspect="16by9" :src="windyUrl" allowfullscreen>
+        </b-embed>
+        <!-- <iframe  src="" frameborder="0"></iframe> -->
+    </b-container>
     <!-- 未来24小时功率预测 -->
     <b-container fluid class="mt-4">
         <b-card body-class="p-0" header-class="border-0">
@@ -71,7 +78,7 @@
                     </b-col>
                 </b-row>
             </template>
-            <future-pre-chart></future-pre-chart>
+            <future-pre-chart ref="futurePreChart"></future-pre-chart>
         </b-card>
     </b-container>
 </div>
@@ -79,6 +86,7 @@
 
 <script>
 import FuturePreChart from './LocationPre/FuturePreChart.vue';
+import LocationPreApi from '../api/LocationPre';
 export default {
     components: {
         FuturePreChart
@@ -89,39 +97,29 @@ export default {
                 lng: 116.404,
                 lat: 39.915
             },
+            windyUrl:'',
             res: {}
         }
     },
     methods: {
         pointChange(e) {
             this.markerPoint = e.point
-            // console.log(e)
+            this.windyUrl = "https://embed.windy.com/embed2.html?lat="+this.markerPoint.lat+"&"+"lon="+this.markerPoint.lng+"&detailLat="+this.markerPoint.lat+"&detailLon="+this.markerPoint.lng+"&width=650&height=450&zoom=6&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1"
+            this.$refs.futurePreChart.getFuturePreData(this.markerPoint.lat, this.markerPoint.lng)
         },
-        getPosition(e) {
-            alert(`${e.point.lng} / ${e.point.lat}`)
-        },
-        getCityName() {
-            //  发送请求获取城市名
-            this.$axios({
-                method: "get", //请求方式
-                // dataType: "JSONP",
-                url: "http://apia.yikeapi.com/geocode?appid=43656176&appsecret=I42og6Lm&output=json&location=116.437039,39.999664", //请求地址
-                // params: {
-                //     ak: 'QBdl4bnuDVgAchd3AoohXPKLe2FooIcV',
-                //     output: 'json',
-                //     coordtype: 'wgs84ll',
-                //     location: `${this.markerPoint.lat},${this.markerPoint.lng}`
-                // },
-                // headers: {
-                //     "Content-Type": "application/json"
-                // },
-            }).then(resp => {
-                this.res = resp //接收数据
-                console.log(this.res)
-            }).catch(err => {
-                console.log(err)
+        // 获取当前经纬度下的未来24小时天气信息
+        getWeatherInfo() {
+            LocationPreApi.getWeatherData(this.markerPoint.lat, this.markerPoint.lng).then(res => {
+                this.res = res.data
             })
-        }
+        },
+    },
+    created(){
+        this.getWeatherInfo(this.markerPoint.lat, this.markerPoint.lng)
+        this.windyUrl = "https://embed.windy.com/embed2.html?lat="+this.markerPoint.lat+"&"+"lon="+this.markerPoint.lng+"&detailLat="+this.markerPoint.lat+"&detailLon="+this.markerPoint.lng+"&width=650&height=450&zoom=6&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1"
+    },
+    mounted() {
+       this.$refs.futurePreChart.getFuturePreData(this.markerPoint.lat, this.markerPoint.lng)
     }
 };
 </script>

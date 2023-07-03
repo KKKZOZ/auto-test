@@ -67,10 +67,11 @@
         <dashboard-navbar :type="$route.meta.navbarType"></dashboard-navbar>
 
         <div @click="$sidebar.displaySidebar(false)">
-            <fade-transition :duration="200" origin="center top" mode="out-in">
+            <!-- <fade-transition :duration="200" origin="center top" mode="out-in"></fade-transition> -->
+            <!-- <slideXLeftTransition origin="center top" mode="out-in"> -->
                 <!-- your content here -->
                 <router-view></router-view>
-            </fade-transition>
+            <!-- </slideXLeftTransition> -->
         </div>
         <content-footer v-if="!$route.meta.hideFooter"></content-footer>
     </div>
@@ -101,7 +102,7 @@ import DashboardNavbar from './DashboardNavbar.vue';
 import ContentFooter from './ContentFooter.vue';
 import DashboardContent from './Content.vue';
 import {
-    FadeTransition
+    SlideXLeftTransition,
 } from 'vue2-transitions';
 
 export default {
@@ -109,7 +110,7 @@ export default {
         DashboardNavbar,
         ContentFooter,
         DashboardContent,
-        FadeTransition
+        SlideXLeftTransition,
     },
     methods: {
         initScrollbar() {

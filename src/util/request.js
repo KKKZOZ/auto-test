@@ -3,7 +3,7 @@ import { Message } from 'element-ui'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: "http://localhost:8082", // 后端接口地址前缀（端口和后端配置文件一致）
+  baseURL: "http://127.0.0.1:5000", // 后端接口地址前缀（端口和后端配置文件一致）
   timeout: 5000, // 请求超时时间
   headers:{
 
@@ -27,36 +27,36 @@ service.interceptors.request.use(
   }
 )
 
-// response 拦截器
-service.interceptors.response.use(
-  response => {
-    /**
-     * code为非200是抛错 可结合自己业务进行修改
-     */
-    const res = response.data
-    if (res.code !== 200) {
-      Message({
-        message: res.msg,
-        type: 'error',
-        duration: 5 * 1000
-      })
-      /**
-       * 可以自定义返回状态码，处理不同的结果
-       */
-      return Promise.reject('error')
-    } else {
-      return response.data
-    }
-  },
-  error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
-  }
-)
+// // response 拦截器
+// service.interceptors.response.use(
+//   response => {
+//     /**
+//      * code为非200是抛错 可结合自己业务进行修改
+//      */
+//     const res = response.data
+//     if (res.code !== 200) {
+//       Message({
+//         message: res.msg,
+//         type: 'error',
+//         duration: 5 * 1000
+//       })
+//       /**
+//        * 可以自定义返回状态码，处理不同的结果
+//        */
+//       return Promise.reject('error')
+//     } else {
+//       return response.data
+//     }
+//   },
+//   error => {
+//     console.log('err' + error) // for debug
+//     Message({
+//       message: error.message,
+//       type: 'error',
+//       duration: 5 * 1000
+//     })
+//     return Promise.reject(error)
+//   }
+// )
 
 export default service

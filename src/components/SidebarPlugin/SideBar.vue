@@ -10,7 +10,7 @@
             <img :src="logo" class="navbar-brand-img" alt="...">
         </router-link>
 
-        <slot name="mobile-right">
+        <!-- <slot name="mobile-right">
             <ul class="nav align-items-center d-md-none">
                 <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
                     <a slot="title-container" class="nav-link nav-link-icon" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -61,7 +61,7 @@
                     </a>
                 </base-dropdown>
             </ul>
-        </slot>
+        </slot> -->
         <slot></slot>
         <div v-show="$sidebar.showSidebar" class="navbar-collapse collapse show" id="sidenav-collapse-main">
 
@@ -89,17 +89,17 @@
             <!--Navigation-->
             <ul class="navbar-nav mb-md-3">
                 <li class="nav-item">
-                    <a class="nav-link" href="https://www.in-en.com/">
+                    <a class="nav-link" href="https://www.in-en.com/" target="_blank">
                         <i class="ni ni-spaceship"></i> 国际能源网
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://wind.in-en.com/">
+                    <a class="nav-link" href="https://wind.in-en.com/" target="_blank">
                         <i class="ni ni-palette"></i> 国际风力发电网
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://power.in-en.com/">
+                    <a class="nav-link" href="https://power.in-en.com/"  target="_blank">
                         <i class="ni ni-ui-04"></i> 国际电力网
                     </a>
                 </li>

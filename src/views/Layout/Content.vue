@@ -1,17 +1,19 @@
 <template>
   <div class="content">
-    <FadeTransition :duration="200" mode="out-in">
+    <collapseTransition>
       <!-- your content here -->
       <router-view></router-view>
-    </FadeTransition>
+    </collapseTransition>
   </div>
 </template>
 <script>
-import { FadeTransition } from 'vue2-transitions';
+import { CollapseTransition } from 'vue2-transitions';
 export default {
   components: {
-    FadeTransition
+    CollapseTransition
   }
 };
 </script>
-<style></style>
+<style>
+
+</style>

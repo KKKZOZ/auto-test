@@ -26,12 +26,26 @@ Vue.use(BaiduMap, {
 Vue.use(VCharts)
 
 import "./assets/open.css"
+import VueKinesis from 'vue-kinesis'
 
+Vue.use(VueKinesis)
+import {
+  SharedElementRouteGuard,
+  SharedElementDirective,
+  createSharedElementDirective
+} from 'v-shared-element'
+
+Vue.use(SharedElementDirective)
 // axios
 import axios from 'axios'
 Vue.prototype.$axios = axios 
 // router setup
 import router from './routes/router';
+router.beforeEach(SharedElementRouteGuard)
+
+import VWave from 'v-wave'
+
+Vue.use(VWave)
 // plugin setup
 Vue.use(DashboardPlugin);
 
