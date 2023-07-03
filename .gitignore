@@ -7,6 +7,7 @@ yarn-debug.log*
 yarn-error.log*
 test/unit/coverage
 
+yarn.lock
 package-lock.json
 
 # Editor directories and files
