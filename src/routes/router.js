@@ -7,6 +7,7 @@ Vue.use(VueRouter);
 // configure router
 const router = new VueRouter({
   mode: 'history',
+  base: '/auto-test/',
   routes, // short for routes: routes
   linkActiveClass: 'active',
   scrollBehavior: (to, from ,savedPosition) => {
