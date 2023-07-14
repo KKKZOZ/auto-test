@@ -11,37 +11,47 @@ import historyDataApi from '../../api/HistoryData'
 export default {
     name: "history-data-date-chart",
     data() {
-        this.extend = {
-            // xAxis: {
-            //     minInterval: 3600 * 1000,
-            //     maxInterval: 3600 * 1000
-            // },
-            dataZoom: [{
-                    // type: 'inside',
-                    show: true,
-                    realtime: true,
-                    start: 0,
-                    end: 5,
-                    // xAxisIndex: [0, 1]
+        this.settings = {
+                area: true,
+                stack: false,
+            },
+            this.extend = {
+                grid: {
+                    show: false
                 },
-                {
-                    type: 'inside',
-                    show: true,
-                    realtime: true,
-                    start: 0,
-                    end: 5,
-                    xAxisIndex: [0],
-                    startValue: 0,
-                    //显示的多少数据
-                    endValue: 12,
-                    zoomLock: true, //阻止区域缩放
-                }
-            ],
-        };
+                xAxis: {
+                    type: 'time',
+                    splitNumber: 10,
+                    minInterval: 3600 * 15,
+                    maxInterval: 3600 * 1000 * 30,
+                },
+                dataZoom: [{
+                        // type: 'inside',
+                        show: true,
+                        realtime: true,
+                        start: 30,
+                        end: 70,
+                        // xAxisIndex: [0, 1]
+                    },
+                    {
+                        type: 'inside',
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 5,
+                        xAxisIndex: [0],
+                        startValue: 30,
+                        //显示的多少数据
+                        endValue: 70,
+                        zoomLock: false, //阻止区域缩放
+                    }
+                ],
+            };
         this.grid = {
             show: false
         };
-        this.chartColors = ["#ABDCFF", "#0396FF", "#A5DEE4"];
+        // 十个颜色
+        this.chartColors = ["#ABDCFF", "#0396FF", "#A5DEE4", "#FFD8C9", "#FFBFBF", "#FFD6E7", "#FFD6E7", "#FFD6E7", "#FFD6E7", "#FFD6E7"];
         this.toolbox = {
             show: true,
             top: 20,
@@ -61,13 +71,13 @@ export default {
             }
         };
         this.legend = {};
-        this.xAxis = {
-            type: 'category',
-            axisLabel: {
-                show: true,
-                rotate: 15 // 设置x轴标签旋转角度
-            }
-        };
+        // this.xAxis = {
+        //     type: 'time',
+        //     // axisLabel: {
+        //     //     show: true,
+        //     //     rotate: 15 // 设置x轴标签旋转角度
+        //     // }
+        // };
         this.yAxis = {};
         this.radar = {};
         this.tooltip = {};
@@ -91,10 +101,10 @@ export default {
     },
     methods: {
         //交互：获取数据————历史数据
-        getData(range,turbine_type) {
+        getData(range, turbine_type) {
             var that = this;
             let chartData = [];
-            historyDataApi.getTimeRangeData(range[0], range[1],turbine_type).then((res) => {
+            historyDataApi.getTimeRangeData(range[0], range[1], turbine_type).then((res) => {
                 console.log(res)
                 chartData = res.data.data
                 this.chartData.rows = chartData.rows

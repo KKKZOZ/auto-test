@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // 定义后端接口的基本配置
 const API = {
-  baseURL: '/api',
+  baseURL: 'http://152.136.61.134:5000',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -16,7 +16,11 @@ export const getEndpointData = () => {
 };
 
 export const postUserData = (userData) => {
-  return axios.post(`${API.baseURL}/all-turbs/update-all`, userData, { headers: API.headers });
+  return axios.get(`${API.baseURL}/all-turbs/update-all`, 
+  { 
+    headers: API.headers,
+    params: userData,
+   });
 };
 
 // 导出API对象

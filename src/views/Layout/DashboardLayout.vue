@@ -30,6 +30,12 @@
                   }">
             </sidebar-item>
             <sidebar-item :link="{
+                name: '给小朋友的风电读物',
+                path: '/guideForKid',
+                icon: 'ni ni-key-25 text-pink'
+              }">
+              </sidebar-item>
+            <!-- <sidebar-item :link="{
               name: 'Login',
               path: '/login',
               icon: 'ni ni-key-25 text-info'
@@ -40,7 +46,7 @@
               path: '/register',
               icon: 'ni ni-circle-08 text-pink'
             }">
-            </sidebar-item>
+            </sidebar-item> -->
         </template>
 
         <template slot="links-after">

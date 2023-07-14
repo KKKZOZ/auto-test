@@ -3,7 +3,7 @@ import { Message } from 'element-ui'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: "http://127.0.0.1:5000", // 后端接口地址前缀（端口和后端配置文件一致）
+  baseURL: "http://152.136.61.134:5000", // 后端接口地址前缀（端口和后端配置文件一致）
   timeout: 5000, // 请求超时时间
   headers:{
 

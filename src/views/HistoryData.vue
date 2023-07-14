@@ -28,7 +28,7 @@
                 
                     <b-card text-variant="white" title="年平均气压" sub-title="average pressure" style="height:100%">
                         <b-card-text>
-                            <span class="text-danger mr-2"><i class="fa fa-trophy"></i><i>{{avgData.avg_pressure}}</i> Pa</span>
+                            <span class="text-danger mr-2"><i class="fa fa-trophy"></i><i>{{avgData.avg_pressure}}</i> hPa</span>
                         </b-card-text>
                         <img src="../assets/historyData/pressure.gif" width="100%" class="rounded-circle" />
                     </b-card>
@@ -38,7 +38,7 @@
                 
                     <b-card text-variant="white" title="年平均风速" sub-title="average windspeed" style="height:100%">
                         <b-card-text>
-                            <span class="text-success mr-2"><i class="fa fa-compass"></i><i>{{avgData.avg_windspeed}}</i> km/s</span>
+                            <span class="text-success mr-2"><i class="fa fa-compass"></i><i>{{avgData.avg_windspeed}}</i> m/s</span>
                         </b-card-text>
                         <img src="../assets/historyData/windspeed.gif" width="100%" class="rounded-circle" />
                     </b-card>
@@ -74,50 +74,50 @@
             <b-col xl="4" cols="12" class="mb-5 mb-xl-0">
                 <b-row>
                     <b-col xl="12" cols="6">
-                        <stats-card title="最高功率" type="gradient-blue" :sub-title="maxPower" icon="ni ni-spaceship">
+                        <stats-card title="最高功率" type="gradient-blue" :sub-title="maxPower_m" icon="ni ni-spaceship">
                             <template slot="footer">
                                 <span class="text-success mr-2" v-show="maxPower-avgData.avg_power<0">
-                                    <i class="fa fa-arrow-down"></i> {{(-maxPower+avgData.avg_power).toFixed(2)}}
+                                    <i class="fa fa-arrow-down"></i> {{(-maxPower+avgData.avg_power).toFixed(2)}} W
                                 </span>
                                 <span class="text-danger mr-2" v-show="maxPower-avgData.avg_power>=0">
-                                    <i class="fa fa-arrow-up"></i> {{(maxPower-avgData.avg_power).toFixed(2)}}
+                                    <i class="fa fa-arrow-up"></i> {{(maxPower-avgData.avg_power).toFixed(2)}} W
                                 </span>
                                 <span class="text-nowrap">较年均功率</span>
                             </template>
                         </stats-card>
                     </b-col>
                     <b-col xl="12" cols="6">
-                        <stats-card title="最高气温" type="gradient-orange" :sub-title="maxTemperature" icon="ni ni-umbrella-13">
+                        <stats-card title="最高气温" type="gradient-orange" :sub-title="maxTemperature_m" icon="ni ni-umbrella-13">
                             <template slot="footer">
-                                <span class="text-success mr-2" v-show="maxTemperature-avgData.avg_temperature<0"><i class="fa fa-arrow-down"></i> {{(-maxTemperature+avgData.avg_temperature).toFixed(2)}}</span>
-                                <span class="text-danger mr-2" v-show="maxTemperature-avgData.avg_temperature>=0"><i class="fa fa-arrow-up"></i> {{(maxTemperature-avgData.avg_temperature).toFixed(2)}}</span>
+                                <span class="text-success mr-2" v-show="maxTemperature-avgData.avg_temperature<0"><i class="fa fa-arrow-down"></i> {{(-maxTemperature+avgData.avg_temperature).toFixed(2)}} ℃</span>
+                                <span class="text-danger mr-2" v-show="maxTemperature-avgData.avg_temperature>=0"><i class="fa fa-arrow-up"></i> {{(maxTemperature-avgData.avg_temperature).toFixed(2)}} ℃</span>
                                 <span class="text-nowrap">较年均气温</span>
                             </template>
                         </stats-card>
                     </b-col>
                     <b-col xl="12" cols="6" class="mt-xl-0 mt-4">
-                        <stats-card title="最高风速" type="gradient-green" :sub-title="maxWindSpeed" icon="ni ni-planet">
+                        <stats-card title="最高风速" type="gradient-green" :sub-title="maxWindSpeed_m" icon="ni ni-planet">
                             <template slot="footer">
-                                <span class="text-success mr-2" v-show="maxWindSpeed-avgData.avg_windspeed<0"><i class="fa fa-arrow-down"></i> {{(-maxWindSpeed+avgData.avg_windspeed).toFixed(2)}}</span>
-                                <span class="text-danger mr-2" v-show="maxWindSpeed-avgData.avg_windspeed>=0"><i class="fa fa-arrow-up"></i> {{(maxWindSpeed-avgData.avg_windspeed).toFixed(2)}}</span>
+                                <span class="text-success mr-2" v-show="maxWindSpeed-avgData.avg_windspeed<0"><i class="fa fa-arrow-down"></i> {{(-maxWindSpeed+avgData.avg_windspeed).toFixed(2)}} m/s</span>
+                                <span class="text-danger mr-2" v-show="maxWindSpeed-avgData.avg_windspeed>=0"><i class="fa fa-arrow-up"></i> {{(maxWindSpeed-avgData.avg_windspeed).toFixed(2)}} m/s</span>
                                 <span class="text-nowrap">较年均风速</span>
                             </template>
                         </stats-card>
                     </b-col>
                     <b-col xl="12" cols="6" class="mt-xl-0 mt-4">
-                        <stats-card title="最高气压" type="gradient-yellow" :sub-title="maxPressure" icon="ni ni-diamond">
+                        <stats-card title="最高气压" type="gradient-yellow" :sub-title="maxPressure_m" icon="ni ni-diamond">
                             <template slot="footer">
-                                <span class="text-success mr-2" v-show="maxPressure - avgData.avg_pressure<0"><i class="fa fa-arrow-down"></i> {{(-maxPressure + avgData.avg_pressure).toFixed(2)}}</span>
-                                <span class="text-danger mr-2" v-show="maxPressure - avgData.avg_pressure>=0"><i class="fa fa-arrow-up"></i> {{(maxPressure - avgData.avg_pressure).toFixed(2)}}</span>
+                                <span class="text-success mr-2" v-show="maxPressure - avgData.avg_pressure<0"><i class="fa fa-arrow-down"></i> {{(-maxPressure + avgData.avg_pressure).toFixed(2)}} hPa</span>
+                                <span class="text-danger mr-2" v-show="maxPressure - avgData.avg_pressure>=0"><i class="fa fa-arrow-up"></i> {{(maxPressure - avgData.avg_pressure).toFixed(2)}} hPa</span>
                                 <span class="text-nowrap">较年均气压</span>
                             </template>
                         </stats-card>
                     </b-col>
                     <b-col xl="12" cols="6" class="mt-xl-0 mt-4">
-                        <stats-card title="最高湿度" type="gradient-red" :sub-title="maxHumidity" icon="ni ni-trophy">
+                        <stats-card title="最高湿度" type="gradient-red" :sub-title="maxHumidity_m" icon="ni ni-trophy">
                             <template slot="footer">
-                                <span class="text-success mr-2" v-show="maxHumidity - avgData.avg_humidity<0"><i class="fa fa-arrow-down"></i> {{(-maxHumidity + avgData.avg_humidity).toFixed(2)}}</span>
-                                <span class="text-danger mr-2" v-show="maxHumidity - avgData.avg_humidity>=0"><i class="fa fa-arrow-up"></i> {{(maxHumidity - avgData.avg_humidity).toFixed(2)}}</span>
+                                <span class="text-success mr-2" v-show="maxHumidity - avgData.avg_humidity<0"><i class="fa fa-arrow-down"></i> {{(-maxHumidity + avgData.avg_humidity).toFixed(2)}} %</span>
+                                <span class="text-danger mr-2" v-show="maxHumidity - avgData.avg_humidity>=0"><i class="fa fa-arrow-up"></i> {{(maxHumidity - avgData.avg_humidity).toFixed(2)}} %</span>
                                 <span class="text-nowrap">较年均温度</span>
                             </template>
                         </stats-card>
@@ -180,7 +180,7 @@ export default {
         return {
             avgData: {},
             val: [
-                '2023-06-15',
+                '2023-07-05',
                 '2023-06-06'
             ],
             dateFormat: "yyyy-MM-dd",
@@ -250,7 +250,12 @@ export default {
             maxTemperature: '',
             maxWindSpeed: '',
             maxPressure: '',
-            maxHumidity: ''
+            maxHumidity: '',
+            maxPower_m:'',
+            maxTemperature_m:'',
+            maxWindSpeed_m:'',
+            maxPressure_m:'',
+            maxHumidity_m:'',
         };
     },
     methods: {
@@ -286,6 +291,11 @@ export default {
                 console.log(res)
                 let Data = res.data.data
                 console.log(Data)
+                this.maxHumidity_m = Data['ROUND(MAX(humidity),2)']+'%'
+                this.maxPower_m = Data['ROUND(MAX(YD15),2)']+ 'W'
+                this.maxPressure_m = Data['ROUND(MAX(pressure),2)']+ 'hPa'
+                this.maxTemperature_m = Data['ROUND(MAX(temperature),2)']+ '℃'
+                this.maxWindSpeed_m = Data['ROUND(MAX(windspeed),2)']+ 'm/s'
                 this.maxHumidity = Data['ROUND(MAX(humidity),2)']
                 this.maxPower = Data['ROUND(MAX(YD15),2)']
                 this.maxPressure = Data['ROUND(MAX(pressure),2)']
@@ -296,9 +306,12 @@ export default {
     },
     created() {
         this.getAvgData();
+        // 获取昨日日期转换为字符串
+        let startDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toLocaleDateString();
         // 获取当前日期转换为字符串
         let endDate = new Date().toLocaleDateString();
         console.log(endDate)
+        this.val[0] = startDate.toString()
         this.val[1] = endDate.toString()
         this.getDateRangeMaxData(this.val, this.selectedType)
     },

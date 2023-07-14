@@ -17,11 +17,10 @@ export default {
     // 获取未来预测数据
     getFuturePreData(lat, lon) {
     return request({
-        url: '/locationPre/futurePre',
+        url: '/mapPre/mapPredict',
         method: 'get',
         params: {
-            lat: lat,
-            lon: lon
+            location: lon + ',' + lat
         }
     })
   }}

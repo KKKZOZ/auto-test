@@ -1,21 +1,52 @@
 <template>
-    <ve-line :data="chartData" :settings="settings" :extend="extend" :toolbox="toolbox" :grid="grid" :xAxis="xAxis" :xAxisType="'time'" :colors="chartColors">
-    </ve-line>
+<ve-line :data="chartData" :settings="settings" :mark-line="markLine"
+:mark-point="markPoint" :extend="extend" :toolbox="toolbox" :grid="grid" :xAxis="xAxis" :colors="chartColors">
+</ve-line>
 </template>
 
 <script>
-import LocationPreApi from '../../api/LocationPre'
-
+import 'echarts/lib/component/markLine'
+import 'echarts/lib/component/markPoint'
 export default {
     name: "future-pre-chart",
     data() {
+        this.settings = {
+            area: true,
+            stack: false,
+        },
+        this.markLine = {
+        data: [
+          {
+            name: '平均线',
+            type: 'average'
+          }
+        ]
+      }
+      this.markPoint = {
+        data: [
+          {
+            name: '最大值',
+            type: 'max'
+          }
+        ]
+      }
         this.extend = {
+            xAxis: {
+                type: 'time',
+                // axisLabel: {
+                //     show: true,
+                //     rotate: 15 // 设置x轴标签旋转角度
+                // }
+                splitNumber: 12,
+                // minInterval: 3600 * 15,
+                // maxInterval: 3600 * 1000,
+            },
             dataZoom: [{
                     // type: 'inside',
                     show: true,
                     realtime: true,
-                    start: 30,
-                    end: 70,
+                    start: 0,
+                    end: 100,
                     // xAxisIndex: [0, 1]
                 },
                 {
@@ -54,32 +85,36 @@ export default {
                 saveAsImage: {}
             }
         };
-        this.legend = {};
-        this.xAxis = {
-            type: 'category',
-            axisLabel: {
-                show: true,
-                rotate: 15 // 设置x轴标签旋转角度
-            }
-        };
+
         return {
             chartData: {
-                columns: [],
+                columns: ["fxTime", "power","windSpeed"],
                 rows: []
             }
         };
     },
     methods: {
-        // 获取当前经纬度下的所在地的未来24小时功率预测
-        getPowerPreData(lat,lon) {
-            LocationPreApi.getFuturePreData(lat,lon).then((res) => {
-                console.log(res)
-                chartData = res.data.data
-                this.chartData.rows = chartData.rows
-                this.chartData.columns = chartData.columns
-                console.log(this.chartData)
-            })
+        getData(chartData){
+            console.log(chartData)
+            console.log(chartData.rows)
+            let rows = chartData.rows
+            this.chartData.rows = rows
+            console.log(this.chartData)
         }
-    }
+        // 获取当前经纬度下的所在地的未来24小时功率预测
+        // getPowerPreData(lat, lon) {
+        //     LocationPreApi.getFuturePreData(lat, lon).then((res) => {
+        //         console.log(res)
+        //         let chartData = res.data.hourly
+        //         this.chartData.rows = chartData
+        //         // this.chartData.columns = chartData.columns
+        //         console.log(this.chartData)
+        //     })
+        // }
+    },
+    // created() {
+    //     this.chartData.rows = this.chartRows
+    //     console.log(this.chartData)
+    // }
 };
 </script>

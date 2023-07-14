@@ -40,6 +40,11 @@ const routes = [
         path: '/locationPre',
         name: 'locationPre',
         component: () => import(/* webpackChunkName: "demo" */ '../views/LocationPre.vue')
+      },
+      {
+        path: '/guideForKid',
+        name: 'guideForKid',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/GuideForKid.vue')
       }
     ]
   },
