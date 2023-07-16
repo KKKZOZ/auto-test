@@ -5,7 +5,7 @@
       <b-col>
         <slot>
           <h5 class="card-title text-uppercase text-muted mb-0" v-if="title">{{title}}</h5>
-          <span class="h2 font-weight-bold mb-0" v-if="subTitle">{{subTitle}}</span>
+          <span class="h2 sub-title font-weight-bold mb-0" v-if="subTitle">{{subTitle}}</span>
         </slot>
       </b-col>
 
@@ -46,4 +46,11 @@
     }
   };
 </script>
-<style></style>
+<style>
+/*  .card-title {
+    font-size: 1rem;
+  }
+  .sub-title {
+    font-size: 1.8rem !important;
+  } */
+</style>

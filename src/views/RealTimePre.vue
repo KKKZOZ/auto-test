@@ -1,5 +1,21 @@
 <template>
   <div id="body-root">
+    <transition name="fade">
+      <div class="lwrapper" v-if="loading">
+        <div class="lcontainer">
+          <svg viewBox="0 -87 463.83425 463" xmlns="http://www.w3.org/2000/svg">
+            <path d="m375.835938 112.957031c-5.851563 0-11.691407.582031-17.425782 1.742188-4.324218-21.582031-18.304687-39.992188-37.933594-49.957031-19.625-9.964844-42.738281-10.382813-62.714843-1.136719-18.078125-49.796875-73.101563-75.507813-122.898438-57.429688s-75.507812 73.105469-57.429687 122.898438c-43.621094 1.378906-78.078125 37.484375-77.4257815 81.121093.6562495 43.640626 36.1835935 78.691407 79.8281255 78.761719h296c48.597656 0 88-39.398437 88-88 0-48.601562-39.402344-88-88-88zm0 0" fill="#a3d4f7"></path>
+          </svg>
+          <svg viewBox="0 -87 463.83425 463" xmlns="http://www.w3.org/2000/svg">
+            <path d="m375.835938 112.957031c-5.851563 0-11.691407.582031-17.425782 1.742188-4.324218-21.582031-18.304687-39.992188-37.933594-49.957031-19.625-9.964844-42.738281-10.382813-62.714843-1.136719-18.078125-49.796875-73.101563-75.507813-122.898438-57.429688s-75.507812 73.105469-57.429687 122.898438c-43.621094 1.378906-78.078125 37.484375-77.4257815 81.121093.6562495 43.640626 36.1835935 78.691407 79.8281255 78.761719h296c48.597656 0 88-39.398437 88-88 0-48.601562-39.402344-88-88-88zm0 0" fill="#b3e4ff"></path>
+          </svg>
+          <svg viewBox="0 -87 463.83425 463" xmlns="http://www.w3.org/2000/svg">
+            <path d="m375.835938 112.957031c-5.851563 0-11.691407.582031-17.425782 1.742188-4.324218-21.582031-18.304687-39.992188-37.933594-49.957031-19.625-9.964844-42.738281-10.382813-62.714843-1.136719-18.078125-49.796875-73.101563-75.507813-122.898438-57.429688s-75.507812 73.105469-57.429687 122.898438c-43.621094 1.378906-78.078125 37.484375-77.4257815 81.121093.6562495 43.640626 36.1835935 78.691407 79.8281255 78.761719h296c48.597656 0 88-39.398437 88-88 0-48.601562-39.402344-88-88-88zm0 0" fill="#fff"></path>
+          </svg>
+        </div>
+        <p>Loading...</p>
+      </div>
+    </transition>
     <div class="tbanner">
       <div class="home_sun">
         <div class="suntemperature-background">
@@ -293,7 +309,7 @@
             <b-row>
               <b-col>
                 <h5 class="card-title text-uppercase text-muted mb-0">预测实时风向</h5>
-                <span class="h2 sub-title font-weight-bold mb-0">{{winddirection + '°'}}</span>
+                <span class="h2 sub-title font-weight-bold mb-0">{{winddirect}} {{winddirection + '°'}}</span>
               </b-col>
             </b-row>
             <div style="width: 100%;height:320px;">
@@ -389,9 +405,23 @@
           <!-- <card type="default" header-classes="bg-transparent"> -->
           <card header-classes="bg-transparent" class="data-card data-table">
             <b-row align-v="center" slot="header">
-              <b-col cols="12">
-                <h5 class="text-black card-title text-uppercase ls-1 mb-1">预测数据</h5>
-                <h5 class="h2 sub-title text-black mb-0">实时数据与预测数据对比图</h5>
+              <b-col xl="6">
+                <!-- <h5 class="text-black card-title text-uppercase ls-1 mb-1">预测数据</h5> -->
+                <h2 class="h2 table-title text-black mb-0">实时数据与预测数据对比图</h2>
+              </b-col>
+              <b-col xl="2">
+
+                <h2 class="h2 text-black mb-0">输入输出：</h2>
+              </b-col>
+              <b-col xl="2" class="mt-md-2 mt-xl-0 select-in-time">
+                <b-form-select v-model="selectedInTime" :options="inOptions" size="lg"
+                @change="selectedInTimeChange">
+                </b-form-select>
+              </b-col>
+              <b-col xl="2" class="mt-md-2 mt-xl-0 select-in-time">
+                <b-form-select v-model="selectedOutTime" :options="outOptions" size="lg"
+                @change="selectedOutTimeChange">
+                </b-form-select>
               </b-col>
               <b-col>
                 <b-nav class="nav-pills justify-content-end">
@@ -423,7 +453,7 @@
                       </svg>
                       <span class="reaction-icon-text">预测当前风机负载</span>
                     </div>
-                    <div class="result-box"><span>{{(yd15*100/maxDict[turbid]).toFixed(1)}}%</span> x {{maxDict[turbid]}}W</div>
+                    <div class="result-box"><span>{{yd15Loading+'%'}}</span> x {{maxDict[turbid]}}W</div>
                   </div>
                   <div class="result-option result-option-memory">
                     <div class="icon-box">
@@ -615,10 +645,53 @@
     },
     data() {
       return {
+        loading: true,
         selectedTime: 24, // 小时数
         selectedType: 0, // 风机id-1
+        selectedInTime: 1,
+        selectedOutTime: 1,
         // startDate: '2022-08-15',
         // endDate: '2023-06-26',
+        inOptions: [{
+            value: null,
+            text: '输入序列长度',
+            disabled: true
+          },
+          {
+            value: 1,
+            text: '仅未来天气'
+          },
+          {
+            value: 3,
+            text: '过去3天'
+          },
+          {
+            value: 5,
+            text: '过去5天'
+          },
+          {
+            value: 7,
+            text: '过去7天'
+          }
+        ],
+        outOptions: [{
+            value: null,
+            text: '输出预测天数',
+            disabled: true
+          },
+          {
+            value: 1,
+            text: '1天'
+          },
+          {
+            value: 2,
+            text: '2天'
+          },
+          {
+            value: 3,
+            text: '3天'
+          }
+        ],
         tOptions: [{
             value: null,
             text: '时间长度',
@@ -716,8 +789,10 @@
         pressure: 0,
         temperature: 0,
         winddirection: 0,
+        winddirect: '北',
         windspeed: 0,
         yd15: 0,
+        yd15Loading: 0,
         realYd15: 0,
         humidity: 0,
 
@@ -767,7 +842,26 @@
           return item.YD15.toFixed(1)
         })
       },
-
+      formatWindDirection(angle) {
+        angle %= 360
+        if (angle >= 338 && angle <=22) {
+          this.winddirect = '北'
+        } else if (angle >= 23 && angle <= 67) {
+          this.winddirect = '东北'
+        } else if (angle >= 68 && angle <= 112) {
+          this.winddirect = '东'
+        } else if (angle >= 113 && angle <= 157) {
+          this.winddirect = '东南'
+        } else if (angle >= 158 && angle <= 202) {
+          this.winddirect = '南'
+        } else if (angle >= 203 && angle <= 247) {
+            this.winddirect = '西南'
+        } else if (angle >= 248 && angle <= 292) {
+          this.winddirect = '西'
+        } else if (angle >= 293 && angle <= 337) {
+          this.winddirect = '西北'
+        }
+      },
       changeAnimationHomeWindspeed(winds) {
         let clouds = document.querySelectorAll('.tbanner .clouds img')
         let fan = document.getElementsByClassName('fan')[0]
@@ -890,7 +984,7 @@
         var lastdata = new_response.future[new_response.future.length - step - 1]
         var nextdata = new_response.future[new_response.future.length - step]
 
-        // console.log('看看两个数据', nextdata, lastdata)
+        console.log('看看两个数据', nextdata, lastdata)
         that.nextdate = nextdata.DATATIME
         that.lastdate = lastdata.DATATIME
         let datanow = 0
@@ -905,15 +999,18 @@
           nextdata = new_response.future[new_response.future.length - step]   // 已修复此处length变化的情况
         }
         that.yd15 = parseFloat((lastdata.YD15 + interv * (nextdata.YD15 - lastdata.YD15) / 900000).toFixed(2))
+        that.yd15Loading = (that.yd15*100/that.maxDict[tid]).toFixed(1)
         that.pressure = (lastdata.PRESSURE + interv * (nextdata.PRESSURE - lastdata.PRESSURE) / 900000).toFixed(2)
         that.temperature = (lastdata.TEMPERATURE + interv * (nextdata.TEMPERATURE - lastdata.TEMPERATURE) / 900000)
           .toFixed(2)
         that.winddirection = (lastdata.WINDDIRECTION + interv * (nextdata.WINDDIRECTION - lastdata.WINDDIRECTION) /
           900000).toFixed(2)
+        that.formatWindDirection(that.winddirection)
         that.windspeed = (lastdata.WINDSPEED + interv * (nextdata.WINDSPEED - lastdata.WINDSPEED) / 900000).toFixed(
           2)
         that.humidity = (lastdata.HUMIDITY + interv * (nextdata.HUMIDITY - lastdata.HUMIDITY) / 900000).toFixed(2)
 
+        that.loading = false
         if (timer) {
           clearInterval(timer)
           timer = null
@@ -929,12 +1026,15 @@
             nextdata = new_response.future[new_response.future.length - step]
           }
           that.yd15 = parseFloat((lastdata.YD15 + interv * (nextdata.YD15 - lastdata.YD15) / 900000).toFixed(2))
+          if (that.yd15Loading !== (that.yd15*100/that.maxDict[tid]).toFixed(1))
+            that.yd15Loading = (that.yd15*100/that.maxDict[tid]).toFixed(1)
           that.pressure = (lastdata.PRESSURE + interv * (nextdata.PRESSURE - lastdata.PRESSURE) / 900000)
             .toFixed(2)
           that.temperature = (lastdata.TEMPERATURE + interv * (nextdata.TEMPERATURE - lastdata.TEMPERATURE) /
             900000).toFixed(2)
           that.winddirection = (lastdata.WINDDIRECTION + interv * (nextdata.WINDDIRECTION - lastdata
             .WINDDIRECTION) / 900000).toFixed(2)
+          that.formatWindDirection(that.winddirection)
           that.windspeed = (lastdata.WINDSPEED + interv * (nextdata.WINDSPEED - lastdata.WINDSPEED) / 900000)
             .toFixed(2)
           that.humidity = (lastdata.HUMIDITY + interv * (nextdata.HUMIDITY - lastdata.HUMIDITY) / 900000)
@@ -988,7 +1088,7 @@
                     if (i == tid){
                       that.initInterface(that.$totalData.data[tid])
                       // that.initAnalysisCardData()
-                      
+
                     }
                   }
                   if (response.data[i].history.length !== 0) {
@@ -1031,9 +1131,10 @@
                         xAxis: {
                           type: 'category',
                           boundaryGap: false,
-                          data: that.$totalData.data[tid].future.map(function(item) {
-                            return that.formatTimestamp(item.DATATIME);
-                          })
+                          data: that.$totalData.data[tid].future.slice(0, that.$totalData.data[tid].future.length-(3-that.selectedOutTime)*96)
+                            .map(function(item) {
+                              return that.formatTimestamp(item.DATATIME);
+                            })
                         },
                         yAxis: {
                           type: 'value',
@@ -1071,8 +1172,9 @@
                                 }
                               ])
                             },
-                            data: that.$totalData.data[tid].future.map(function(item) {
-                              return item.YD15.toFixed(1);
+                            data: that.$totalData.data[tid].future.slice(0, that.$totalData.data[tid].future.length-(3-that.selectedOutTime)*96)
+                              .map(function(item) {
+                                return item.YD15.toFixed(1);
                             }),
                             markPoint: {
                               symbol: 'image://data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjg4NjYzMzYzMTEzIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM2NjQiIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0xMTUuNyAxMTUuNnYzOTQuOGgzOTQuOHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjUiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgNTI3LjhIMTE1LjdjLTkuNiAwLTE3LjQtNy44LTE3LjQtMTcuNFYxMTUuNmMwLTcgNC4yLTEzLjQgMTAuOC0xNi4xIDYuNS0yLjcgMTQtMS4yIDE5IDMuOGwzOTQuOCAzOTQuOGM1IDUgNi41IDEyLjUgMy44IDE5LTIuOCA2LjUtOS4yIDEwLjctMTYuMiAxMC43ek0xMzMuMSA0OTNoMzM1LjNMMTMzLjEgMTU3LjdWNDkzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY2NiI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTUuNyA5MDUuMmgzOTQuOFY1MTAuNHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjciPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgOTIyLjdIMTE1LjdjLTcgMC0xMy40LTQuMi0xNi4xLTEwLjgtMi43LTYuNS0xLjItMTQgMy44LTE5bDM5NC44LTM5NC44YzUtNSAxMi41LTYuNSAxOS0zLjhzMTAuOCA5LjEgMTAuOCAxNi4xdjM5NC44Yy0wLjEgOS43LTcuOSAxNy41LTE3LjUgMTcuNXogbS0zNTIuNy0zNC45aDMzNS4zVjU1Mi41TDE1Ny44IDg4Ny44eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY2OCI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyA5MDUuMlY1MTAuNEg1MTAuNXoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjkiPjwvcGF0aD48cGF0aCBkPSJNOTA1LjMgOTIyLjdjLTQuNSAwLTktMS44LTEyLjMtNS4xTDQ5OC4yIDUyMi43Yy01LTUtNi41LTEyLjUtMy44LTE5czkuMS0xMC44IDE2LjEtMTAuOGgzOTQuOGM5LjYgMCAxNy40IDcuOCAxNy40IDE3LjR2Mzk0LjhjMCA3LTQuMiAxMy40LTEwLjggMTYuMS0yLjEgMS00LjMgMS41LTYuNiAxLjV6TTU1Mi42IDUyNy44bDMzNS4zIDMzNS4zVjUyNy44SDU1Mi42eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3MCI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyAxMTUuNkg1MTAuNXYzOTQuOHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NzEiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgNTI3LjhjLTIuMiAwLTQuNS0wLjQtNi43LTEuMy02LjUtMi43LTEwLjgtOS4xLTEwLjgtMTYuMVYxMTUuNmMwLTkuNiA3LjgtMTcuNCAxNy40LTE3LjRoMzk0LjhjNyAwIDEzLjQgNC4yIDE2LjEgMTAuOCAyLjcgNi41IDEuMiAxNC0zLjggMTlMNTIyLjggNTIyLjdjLTMuMyAzLjQtNy44IDUuMS0xMi4zIDUuMXpNNTI3LjkgMTMzdjMzNS4zTDg2My4zIDEzM0g1MjcuOXoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2NzIiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgMTE1LjZMMzEzLjEgMzEzbDE5Ny40IDE5Ny40eiIgZmlsbD0iIzgwRDRFRSIgcC1pZD0iMzY3MyI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1MjcuOGMtNC41IDAtOS0xLjgtMTIuMy01LjFMMzAwLjggMzI1LjNjLTYuOC02LjgtNi44LTE3LjggMC0yNC42bDE5Ny40LTE5Ny40YzUtNSAxMi41LTYuNSAxOS0zLjhzMTAuOCA5LjEgMTAuOCAxNi4xdjM5NC44YzAgNy00LjIgMTMuNC0xMC44IDE2LjEtMi4yIDAuOS00LjUgMS4zLTYuNyAxLjN6TTMzNy43IDMxM0w0OTMgNDY4LjNWMTU3LjdMMzM3LjcgMzEzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3NCI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTUuNyA1MTAuNGwxOTcuNCAxOTcuNCAxOTcuNC0xOTcuNHoiIGZpbGw9IiM4MEQ0RUUiIHAtaWQ9IjM2NzUiPjwvcGF0aD48cGF0aCBkPSJNMzEzLjEgNzI1LjJjLTQuNSAwLTguOS0xLjctMTIuMy01LjFMMTAzLjQgNTIyLjdjLTUtNS02LjUtMTIuNS0zLjgtMTlzOS4xLTEwLjggMTYuMS0xMC44aDM5NC44YzcgMCAxMy40IDQuMiAxNi4xIDEwLjggMi43IDYuNSAxLjIgMTQtMy44IDE5TDMyNS40IDcyMC4xYy0zLjQgMy40LTcuOCA1LjEtMTIuMyA1LjF6TTE1Ny44IDUyNy44bDE1NS4zIDE1NS4zIDE1NS4zLTE1NS4zSDE1Ny44eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3NiI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA5MDUuMmwxOTcuNC0xOTcuNC0xOTcuNC0xOTcuNHoiIGZpbGw9IiM4MEQ0RUUiIHAtaWQ9IjM2NzciPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgOTIyLjdjLTIuMiAwLTQuNS0wLjQtNi43LTEuMy02LjUtMi43LTEwLjgtOS4xLTEwLjgtMTYuMVY1MTAuNGMwLTcgNC4yLTEzLjQgMTAuOC0xNi4xIDYuNS0yLjcgMTQtMS4yIDE5IDMuOGwxOTcuNCAxOTcuNGMzLjMgMy4zIDUuMSA3LjcgNS4xIDEyLjMgMCA0LjYtMS44IDkuMS01LjEgMTIuM0w1MjIuOCA5MTcuNmMtMy4zIDMuMy03LjggNS4xLTEyLjMgNS4xeiBtMTcuNC0zNzAuMnYzMTAuN2wxNTUuMy0xNTUuMy0xNTUuMy0xNTUuNHoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2NzgiPjwvcGF0aD48cGF0aCBkPSJNOTA1LjMgNTEwLjRMNzA3LjkgMzEzIDUxMC41IDUxMC40eiIgZmlsbD0iIzgwRDRFRSIgcC1pZD0iMzY3OSI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyA1MjcuOEg1MTAuNWMtNyAwLTEzLjQtNC4yLTE2LjEtMTAuOC0yLjctNi41LTEuMi0xNCAzLjgtMTlsMTk3LjQtMTk3LjRjNi44LTYuOCAxNy44LTYuOCAyNC42IDBMOTE3LjYgNDk4YzUgNSA2LjUgMTIuNSAzLjggMTktMi43IDYuNi05IDEwLjgtMTYuMSAxMC44ek01NTIuNiA0OTNoMzEwLjdMNzA3LjkgMzM3LjYgNTUyLjYgNDkzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY4MCI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1MTAuNG0tNzAuMyAwYTcwLjMgNzAuMyAwIDEgMCAxNDAuNiAwIDcwLjMgNzAuMyAwIDEgMC0xNDAuNiAwWiIgZmlsbD0iI0U0NTU0NCIgcC1pZD0iMzY4MSI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1OTguMmMtNDguNCAwLTg3LjgtMzkuNC04Ny44LTg3LjhzMzkuNC04Ny44IDg3LjgtODcuOCA4Ny44IDM5LjQgODcuOCA4Ny44LTM5LjQgODcuOC04Ny44IDg3Ljh6IG0wLTE0MC43Yy0yOS4yIDAtNTIuOSAyMy43LTUyLjkgNTIuOXMyMy43IDUyLjkgNTIuOSA1Mi45IDUyLjktMjMuNyA1Mi45LTUyLjktMjMuNy01Mi45LTUyLjktNTIuOXoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2ODIiPjwvcGF0aD48L3N2Zz4=',
@@ -1103,31 +1205,31 @@
                               ])
                             },
                             data: that.formatHistory(that.$totalData.data[tid]),
-                          },
-                          {
-                            showSymbol: false,
-                            name: "预测数据",
-                            type: "lines",
-                            polyline: false,
-                            smooth: false,
-                            coordinateSystem: "cartesian2d",
-                            zlevel: 1,
-                            effect: {
-                              show: true,
-                              smooth: true,
-                              period: 2,
-                              symbolSize: 3,
-                              trailLength: 0.5,
-                            },
-                            lineStyle: {
-                              color: "#00ffff",
-                              width: 1,
-                              opacity: 0,
-                              curveness: 0,
-                              cap: "round",
-                            },
-                            data: that.formatCoord(that.$totalData.data[tid])
                           }
+                          // {
+                          //   showSymbol: false,
+                          //   name: "预测数据",
+                          //   type: "lines",
+                          //   polyline: false,
+                          //   smooth: false,
+                          //   coordinateSystem: "cartesian2d",
+                          //   zlevel: 1,
+                          //   effect: {
+                          //     show: true,
+                          //     smooth: true,
+                          //     period: 2,
+                          //     symbolSize: 3,
+                          //     trailLength: 0.5,
+                          //   },
+                          //   lineStyle: {
+                          //     color: "#00ffff",
+                          //     width: 1,
+                          //     opacity: 0,
+                          //     curveness: 0,
+                          //     cap: "round",
+                          //   },
+                          //   data: that.formatCoord(that.$totalData.data[tid])
+                          // }
                         ]
                       }
                       myChart.setOption(newOption);
@@ -1164,9 +1266,10 @@
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: new_response.future.map(function(item) {
-              return that.formatTimestamp(item.DATATIME);
-            })
+            data: new_response.future.slice(0, new_response.future.length-(3-that.selectedOutTime)*96)
+              .map(function(item) {
+                return that.formatTimestamp(item.DATATIME);
+              })
           },
           yAxis: {
             type: 'value',
@@ -1204,9 +1307,10 @@
                   }
                 ])
               },
-              data: new_response.future.map(function(item) {
-                return item.YD15.toFixed(1);
-              }),
+              data:  new_response.future.slice(0, new_response.future.length-(3-that.selectedOutTime)*96)
+                .map(function(item) {
+                  return item.YD15.toFixed(1);
+                }),
               markPoint: {
                 symbol: 'image://data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjg4NjYzMzYzMTEzIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM2NjQiIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0xMTUuNyAxMTUuNnYzOTQuOGgzOTQuOHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjUiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgNTI3LjhIMTE1LjdjLTkuNiAwLTE3LjQtNy44LTE3LjQtMTcuNFYxMTUuNmMwLTcgNC4yLTEzLjQgMTAuOC0xNi4xIDYuNS0yLjcgMTQtMS4yIDE5IDMuOGwzOTQuOCAzOTQuOGM1IDUgNi41IDEyLjUgMy44IDE5LTIuOCA2LjUtOS4yIDEwLjctMTYuMiAxMC43ek0xMzMuMSA0OTNoMzM1LjNMMTMzLjEgMTU3LjdWNDkzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY2NiI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTUuNyA5MDUuMmgzOTQuOFY1MTAuNHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjciPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgOTIyLjdIMTE1LjdjLTcgMC0xMy40LTQuMi0xNi4xLTEwLjgtMi43LTYuNS0xLjItMTQgMy44LTE5bDM5NC44LTM5NC44YzUtNSAxMi41LTYuNSAxOS0zLjhzMTAuOCA5LjEgMTAuOCAxNi4xdjM5NC44Yy0wLjEgOS43LTcuOSAxNy41LTE3LjUgMTcuNXogbS0zNTIuNy0zNC45aDMzNS4zVjU1Mi41TDE1Ny44IDg4Ny44eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY2OCI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyA5MDUuMlY1MTAuNEg1MTAuNXoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjkiPjwvcGF0aD48cGF0aCBkPSJNOTA1LjMgOTIyLjdjLTQuNSAwLTktMS44LTEyLjMtNS4xTDQ5OC4yIDUyMi43Yy01LTUtNi41LTEyLjUtMy44LTE5czkuMS0xMC44IDE2LjEtMTAuOGgzOTQuOGM5LjYgMCAxNy40IDcuOCAxNy40IDE3LjR2Mzk0LjhjMCA3LTQuMiAxMy40LTEwLjggMTYuMS0yLjEgMS00LjMgMS41LTYuNiAxLjV6TTU1Mi42IDUyNy44bDMzNS4zIDMzNS4zVjUyNy44SDU1Mi42eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3MCI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyAxMTUuNkg1MTAuNXYzOTQuOHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NzEiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgNTI3LjhjLTIuMiAwLTQuNS0wLjQtNi43LTEuMy02LjUtMi43LTEwLjgtOS4xLTEwLjgtMTYuMVYxMTUuNmMwLTkuNiA3LjgtMTcuNCAxNy40LTE3LjRoMzk0LjhjNyAwIDEzLjQgNC4yIDE2LjEgMTAuOCAyLjcgNi41IDEuMiAxNC0zLjggMTlMNTIyLjggNTIyLjdjLTMuMyAzLjQtNy44IDUuMS0xMi4zIDUuMXpNNTI3LjkgMTMzdjMzNS4zTDg2My4zIDEzM0g1MjcuOXoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2NzIiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgMTE1LjZMMzEzLjEgMzEzbDE5Ny40IDE5Ny40eiIgZmlsbD0iIzgwRDRFRSIgcC1pZD0iMzY3MyI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1MjcuOGMtNC41IDAtOS0xLjgtMTIuMy01LjFMMzAwLjggMzI1LjNjLTYuOC02LjgtNi44LTE3LjggMC0yNC42bDE5Ny40LTE5Ny40YzUtNSAxMi41LTYuNSAxOS0zLjhzMTAuOCA5LjEgMTAuOCAxNi4xdjM5NC44YzAgNy00LjIgMTMuNC0xMC44IDE2LjEtMi4yIDAuOS00LjUgMS4zLTYuNyAxLjN6TTMzNy43IDMxM0w0OTMgNDY4LjNWMTU3LjdMMzM3LjcgMzEzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3NCI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTUuNyA1MTAuNGwxOTcuNCAxOTcuNCAxOTcuNC0xOTcuNHoiIGZpbGw9IiM4MEQ0RUUiIHAtaWQ9IjM2NzUiPjwvcGF0aD48cGF0aCBkPSJNMzEzLjEgNzI1LjJjLTQuNSAwLTguOS0xLjctMTIuMy01LjFMMTAzLjQgNTIyLjdjLTUtNS02LjUtMTIuNS0zLjgtMTlzOS4xLTEwLjggMTYuMS0xMC44aDM5NC44YzcgMCAxMy40IDQuMiAxNi4xIDEwLjggMi43IDYuNSAxLjIgMTQtMy44IDE5TDMyNS40IDcyMC4xYy0zLjQgMy40LTcuOCA1LjEtMTIuMyA1LjF6TTE1Ny44IDUyNy44bDE1NS4zIDE1NS4zIDE1NS4zLTE1NS4zSDE1Ny44eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3NiI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA5MDUuMmwxOTcuNC0xOTcuNC0xOTcuNC0xOTcuNHoiIGZpbGw9IiM4MEQ0RUUiIHAtaWQ9IjM2NzciPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgOTIyLjdjLTIuMiAwLTQuNS0wLjQtNi43LTEuMy02LjUtMi43LTEwLjgtOS4xLTEwLjgtMTYuMVY1MTAuNGMwLTcgNC4yLTEzLjQgMTAuOC0xNi4xIDYuNS0yLjcgMTQtMS4yIDE5IDMuOGwxOTcuNCAxOTcuNGMzLjMgMy4zIDUuMSA3LjcgNS4xIDEyLjMgMCA0LjYtMS44IDkuMS01LjEgMTIuM0w1MjIuOCA5MTcuNmMtMy4zIDMuMy03LjggNS4xLTEyLjMgNS4xeiBtMTcuNC0zNzAuMnYzMTAuN2wxNTUuMy0xNTUuMy0xNTUuMy0xNTUuNHoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2NzgiPjwvcGF0aD48cGF0aCBkPSJNOTA1LjMgNTEwLjRMNzA3LjkgMzEzIDUxMC41IDUxMC40eiIgZmlsbD0iIzgwRDRFRSIgcC1pZD0iMzY3OSI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyA1MjcuOEg1MTAuNWMtNyAwLTEzLjQtNC4yLTE2LjEtMTAuOC0yLjctNi41LTEuMi0xNCAzLjgtMTlsMTk3LjQtMTk3LjRjNi44LTYuOCAxNy44LTYuOCAyNC42IDBMOTE3LjYgNDk4YzUgNSA2LjUgMTIuNSAzLjggMTktMi43IDYuNi05IDEwLjgtMTYuMSAxMC44ek01NTIuNiA0OTNoMzEwLjdMNzA3LjkgMzM3LjYgNTUyLjYgNDkzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY4MCI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1MTAuNG0tNzAuMyAwYTcwLjMgNzAuMyAwIDEgMCAxNDAuNiAwIDcwLjMgNzAuMyAwIDEgMC0xNDAuNiAwWiIgZmlsbD0iI0U0NTU0NCIgcC1pZD0iMzY4MSI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1OTguMmMtNDguNCAwLTg3LjgtMzkuNC04Ny44LTg3LjhzMzkuNC04Ny44IDg3LjgtODcuOCA4Ny44IDM5LjQgODcuOCA4Ny44LTM5LjQgODcuOC04Ny44IDg3Ljh6IG0wLTE0MC43Yy0yOS4yIDAtNTIuOSAyMy43LTUyLjkgNTIuOXMyMy43IDUyLjkgNTIuOSA1Mi45IDUyLjktMjMuNyA1Mi45LTUyLjktMjMuNy01Mi45LTUyLjktNTIuOXoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2ODIiPjwvcGF0aD48L3N2Zz4=',
                 symbolSize: 30,
@@ -1236,31 +1340,31 @@
                 ])
               },
               data: that.formatHistory(new_response),
-            },
-            {
-              showSymbol: false,
-              name: "预测数据",
-              type: "lines",
-              polyline: false,
-              smooth: false,
-              coordinateSystem: "cartesian2d",
-              zlevel: 1,
-              effect: {
-                show: true,
-                smooth: true,
-                period: 2,
-                symbolSize: 3,
-                trailLength: 0.5,
-              },
-              lineStyle: {
-                color: "#00ffff",
-                width: 1,
-                opacity: 0,
-                curveness: 0,
-                cap: "round",
-              },
-              data: that.formatCoord(new_response)
             }
+            // {
+            //   showSymbol: false,
+            //   name: "预测数据",
+            //   type: "lines",
+            //   polyline: false,
+            //   smooth: false,
+            //   coordinateSystem: "cartesian2d",
+            //   zlevel: 1,
+            //   effect: {
+            //     show: true,
+            //     smooth: true,
+            //     period: 2,
+            //     symbolSize: 3,
+            //     trailLength: 0.5,
+            //   },
+            //   lineStyle: {
+            //     color: "#00ffff",
+            //     width: 1,
+            //     opacity: 0,
+            //     curveness: 0,
+            //     cap: "round",
+            //   },
+            //   data: that.formatCoord(new_response)
+            // }
           ]
         };
 
@@ -1277,6 +1381,131 @@
 
       selectedTimeChange() {
         this.initAnalysisCardData()
+      },
+
+      selectedInTimeChange() {
+        that.loading = true
+        // setTimeout(() => {
+        getEndpointData({in_time: that.selectedInTime})
+        .then(response => {
+          Vue.prototype.$totalData = response
+          Vue.prototype.$selectedInTime = that.selectedInTime
+          // 处理响应数据
+          that.initInterface(response)
+        })
+        // }, 1000)
+      },
+
+      selectedOutTimeChange() {
+        let lastdata = new_response.future[new_response.future.length - step - 1]
+        let nextdata = new_response.future[new_response.future.length - step]
+        console.log('调用OutTimeChange', that.selectedOutTime)
+        that.loading = true
+        let nOption = {
+          grid: {
+            left: '15%',
+          },
+          tooltip: {
+            trigger: 'axis',
+            position: function(pt) {
+              return [pt[0], '10%'];
+            }
+          },
+
+          toolbox: {
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              restore: {},
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: that.$totalData.data[that.turbid].future.slice(0, that.$totalData.data[that.turbid].future.length-(3-that.selectedOutTime)*96)
+              .map(function(item) {
+                return that.formatTimestamp(item.DATATIME);
+              })
+          },
+          yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+          },
+          dataZoom: [{
+              type: 'inside',
+              startValue: that.$totalData.data[that.turbid].future.length - step - 1 - 48,
+              endValue: that.$totalData.data[that.turbid].future.length - step - 1 + 48,
+              minValueSpan: 32,
+              zoomOnMouseWheel: 'ctrl'
+            },
+            {
+              start: 0,
+              end: 10
+            }
+          ],
+          series: [{
+              smooth: false,
+              name: '预测数据',
+              type: 'line',
+              symbol: 'none',
+              sampling: 'lttb',
+              itemStyle: {
+                color: '#4DA2CB'
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#67B26F'
+                  },
+                  {
+                    offset: 1,
+                    color: '#4DA2CB'
+                  }
+                ])
+              },
+              data: that.$totalData.data[that.turbid].future.slice(0, that.$totalData.data[that.turbid].future.length-(3-that.selectedOutTime)*96)
+                .map(function(item) {
+                  return item.YD15.toFixed(1);
+              }),
+              markPoint: {
+                symbol: 'image://data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjg4NjYzMzYzMTEzIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM2NjQiIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0xMTUuNyAxMTUuNnYzOTQuOGgzOTQuOHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjUiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgNTI3LjhIMTE1LjdjLTkuNiAwLTE3LjQtNy44LTE3LjQtMTcuNFYxMTUuNmMwLTcgNC4yLTEzLjQgMTAuOC0xNi4xIDYuNS0yLjcgMTQtMS4yIDE5IDMuOGwzOTQuOCAzOTQuOGM1IDUgNi41IDEyLjUgMy44IDE5LTIuOCA2LjUtOS4yIDEwLjctMTYuMiAxMC43ek0xMzMuMSA0OTNoMzM1LjNMMTMzLjEgMTU3LjdWNDkzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY2NiI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTUuNyA5MDUuMmgzOTQuOFY1MTAuNHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjciPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgOTIyLjdIMTE1LjdjLTcgMC0xMy40LTQuMi0xNi4xLTEwLjgtMi43LTYuNS0xLjItMTQgMy44LTE5bDM5NC44LTM5NC44YzUtNSAxMi41LTYuNSAxOS0zLjhzMTAuOCA5LjEgMTAuOCAxNi4xdjM5NC44Yy0wLjEgOS43LTcuOSAxNy41LTE3LjUgMTcuNXogbS0zNTIuNy0zNC45aDMzNS4zVjU1Mi41TDE1Ny44IDg4Ny44eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY2OCI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyA5MDUuMlY1MTAuNEg1MTAuNXoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NjkiPjwvcGF0aD48cGF0aCBkPSJNOTA1LjMgOTIyLjdjLTQuNSAwLTktMS44LTEyLjMtNS4xTDQ5OC4yIDUyMi43Yy01LTUtNi41LTEyLjUtMy44LTE5czkuMS0xMC44IDE2LjEtMTAuOGgzOTQuOGM5LjYgMCAxNy40IDcuOCAxNy40IDE3LjR2Mzk0LjhjMCA3LTQuMiAxMy40LTEwLjggMTYuMS0yLjEgMS00LjMgMS41LTYuNiAxLjV6TTU1Mi42IDUyNy44bDMzNS4zIDMzNS4zVjUyNy44SDU1Mi42eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3MCI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyAxMTUuNkg1MTAuNXYzOTQuOHoiIGZpbGw9IiM1Q0NGRUEiIHAtaWQ9IjM2NzEiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgNTI3LjhjLTIuMiAwLTQuNS0wLjQtNi43LTEuMy02LjUtMi43LTEwLjgtOS4xLTEwLjgtMTYuMVYxMTUuNmMwLTkuNiA3LjgtMTcuNCAxNy40LTE3LjRoMzk0LjhjNyAwIDEzLjQgNC4yIDE2LjEgMTAuOCAyLjcgNi41IDEuMiAxNC0zLjggMTlMNTIyLjggNTIyLjdjLTMuMyAzLjQtNy44IDUuMS0xMi4zIDUuMXpNNTI3LjkgMTMzdjMzNS4zTDg2My4zIDEzM0g1MjcuOXoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2NzIiPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgMTE1LjZMMzEzLjEgMzEzbDE5Ny40IDE5Ny40eiIgZmlsbD0iIzgwRDRFRSIgcC1pZD0iMzY3MyI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1MjcuOGMtNC41IDAtOS0xLjgtMTIuMy01LjFMMzAwLjggMzI1LjNjLTYuOC02LjgtNi44LTE3LjggMC0yNC42bDE5Ny40LTE5Ny40YzUtNSAxMi41LTYuNSAxOS0zLjhzMTAuOCA5LjEgMTAuOCAxNi4xdjM5NC44YzAgNy00LjIgMTMuNC0xMC44IDE2LjEtMi4yIDAuOS00LjUgMS4zLTYuNyAxLjN6TTMzNy43IDMxM0w0OTMgNDY4LjNWMTU3LjdMMzM3LjcgMzEzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3NCI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTUuNyA1MTAuNGwxOTcuNCAxOTcuNCAxOTcuNC0xOTcuNHoiIGZpbGw9IiM4MEQ0RUUiIHAtaWQ9IjM2NzUiPjwvcGF0aD48cGF0aCBkPSJNMzEzLjEgNzI1LjJjLTQuNSAwLTguOS0xLjctMTIuMy01LjFMMTAzLjQgNTIyLjdjLTUtNS02LjUtMTIuNS0zLjgtMTlzOS4xLTEwLjggMTYuMS0xMC44aDM5NC44YzcgMCAxMy40IDQuMiAxNi4xIDEwLjggMi43IDYuNSAxLjIgMTQtMy44IDE5TDMyNS40IDcyMC4xYy0zLjQgMy40LTcuOCA1LjEtMTIuMyA1LjF6TTE1Ny44IDUyNy44bDE1NS4zIDE1NS4zIDE1NS4zLTE1NS4zSDE1Ny44eiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY3NiI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA5MDUuMmwxOTcuNC0xOTcuNC0xOTcuNC0xOTcuNHoiIGZpbGw9IiM4MEQ0RUUiIHAtaWQ9IjM2NzciPjwvcGF0aD48cGF0aCBkPSJNNTEwLjUgOTIyLjdjLTIuMiAwLTQuNS0wLjQtNi43LTEuMy02LjUtMi43LTEwLjgtOS4xLTEwLjgtMTYuMVY1MTAuNGMwLTcgNC4yLTEzLjQgMTAuOC0xNi4xIDYuNS0yLjcgMTQtMS4yIDE5IDMuOGwxOTcuNCAxOTcuNGMzLjMgMy4zIDUuMSA3LjcgNS4xIDEyLjMgMCA0LjYtMS44IDkuMS01LjEgMTIuM0w1MjIuOCA5MTcuNmMtMy4zIDMuMy03LjggNS4xLTEyLjMgNS4xeiBtMTcuNC0zNzAuMnYzMTAuN2wxNTUuMy0xNTUuMy0xNTUuMy0xNTUuNHoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2NzgiPjwvcGF0aD48cGF0aCBkPSJNOTA1LjMgNTEwLjRMNzA3LjkgMzEzIDUxMC41IDUxMC40eiIgZmlsbD0iIzgwRDRFRSIgcC1pZD0iMzY3OSI+PC9wYXRoPjxwYXRoIGQ9Ik05MDUuMyA1MjcuOEg1MTAuNWMtNyAwLTEzLjQtNC4yLTE2LjEtMTAuOC0yLjctNi41LTEuMi0xNCAzLjgtMTlsMTk3LjQtMTk3LjRjNi44LTYuOCAxNy44LTYuOCAyNC42IDBMOTE3LjYgNDk4YzUgNSA2LjUgMTIuNSAzLjggMTktMi43IDYuNi05IDEwLjgtMTYuMSAxMC44ek01NTIuNiA0OTNoMzEwLjdMNzA3LjkgMzM3LjYgNTUyLjYgNDkzeiIgZmlsbD0iIzRDNDg0OCIgcC1pZD0iMzY4MCI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1MTAuNG0tNzAuMyAwYTcwLjMgNzAuMyAwIDEgMCAxNDAuNiAwIDcwLjMgNzAuMyAwIDEgMC0xNDAuNiAwWiIgZmlsbD0iI0U0NTU0NCIgcC1pZD0iMzY4MSI+PC9wYXRoPjxwYXRoIGQ9Ik01MTAuNSA1OTguMmMtNDguNCAwLTg3LjgtMzkuNC04Ny44LTg3LjhzMzkuNC04Ny44IDg3LjgtODcuOCA4Ny44IDM5LjQgODcuOCA4Ny44LTM5LjQgODcuOC04Ny44IDg3Ljh6IG0wLTE0MC43Yy0yOS4yIDAtNTIuOSAyMy43LTUyLjkgNTIuOXMyMy43IDUyLjkgNTIuOSA1Mi45IDUyLjktMjMuNyA1Mi45LTUyLjktMjMuNy01Mi45LTUyLjktNTIuOXoiIGZpbGw9IiM0QzQ4NDgiIHAtaWQ9IjM2ODIiPjwvcGF0aD48L3N2Zz4=',
+                symbolSize: 30,
+                data: [{
+                  coord: [that.formatTimestamp(that.lastdate), lastdata.YD15.toFixed(1)]
+                }]
+              }
+            },
+            {
+              smooth: false,
+              name: '实时数据',
+              type: 'line',
+              symbol: 'none',
+              sampling: 'lttb',
+              itemStyle: {
+                color: 'rgb(255, 70, 131)'
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgb(255, 158, 68)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgb(255, 70, 131)'
+                  }
+                ])
+              },
+              data: that.formatHistory(that.$totalData.data[that.turbid]),
+            }
+          ]
+        }
+        setTimeout(()=>{
+          myChart.setOption(nOption);
+          that.loading = false
+        }, 1000)
+
       },
 
       initLeon() {
@@ -1626,11 +1855,15 @@
         let val = window.scrollY;
         pannel.style.marginBottom = val * 2 + 'px';
       })
+      if (typeof this.$selectedInTime !== "undefined") {
+        this.selectedInTime = this.$selectedInTime
+      }
 
       if (typeof this.$totalData == "undefined" || this.$totalData == null) {
-        getEndpointData()
+        getEndpointData({in_time: that.selectedInTime})
           .then(response => {
             Vue.prototype.$totalData = response
+            Vue.prototype.$selectedInTime = that.selectedInTime
             // 处理响应数据
             that.initInterface(response)
           }).catch(error => {
@@ -3059,6 +3292,94 @@
     -webkit-user-drag: none;
   }
 
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 1.25s;
+  }
+
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+
+  .lwrapper {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, .6);
+    backdrop-filter: blur(20px);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .lwrapper p {
+    color: #0006;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 0;
+  }
+
+  .lcontainer {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+  .lcontainer svg {
+    filter: drop-shadow(2px 2px 3px #0002);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transition: all;
+    animation-name: fluffy;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+  .lcontainer svg:nth-of-type(1) {
+    width: 100%;
+    height: 100%;
+    transform: translate(-60%, -50%);
+  }
+  .lcontainer svg:nth-of-type(2) {
+    width: 75%;
+    height: 75%;
+    animation-delay: -0.2s;
+    transform: translate(-30%, -30%);
+  }
+  .lcontainer svg:nth-of-type(3) {
+    width: 60%;
+    height: 60%;
+    animation-delay: -0.4s;
+    transform: translate(-100%, -20%);
+  }
+
+  @keyframes fluffy {
+    0% {
+      top: 50%;
+    }
+    50% {
+      top: 44%;
+    }
+    100% {
+      top: 50%;
+    }
+  }
+
+
+  .card-title {
+    font-size: 1rem !important;
+  }
+  .sub-title {
+    font-size: 1.8rem !important;
+  }
+  .table-title {
+    font-size: 1.5rem !important;
+  }
   #text-container {
     background: transparent;
     width: calc(400px + 20vw);
@@ -3066,6 +3387,31 @@
   }
 
   @media screen and (max-aspect-ratio: 9/16) {
+    .select-in-time {
+      margin-top: 8px;
+    }
+
+    .switch-description {
+      width: 20vw !important;
+    }
+
+    .switch-title {
+      width: 20vw !important;
+      font-size: 1.5rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0 !important;
+    }
+
+    .heading-secondary p {
+      font-size: 18px !important;
+      transform: translateY(10px);
+    }
+
+    .result-option {
+      font-size: 16px !important;
+      padding: 0px 8px !important;
+    }
+
     #text-container {
       transform: scale(0.7);
     }
@@ -3228,7 +3574,7 @@
   }
 
   .switch-title {
-    font-size: 28px;
+    font-size: 1.75rem;
     font-weight: 700;
     letter-spacing: 5px;
   }

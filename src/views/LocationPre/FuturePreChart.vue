@@ -1,7 +1,8 @@
 <template>
-<ve-line :data="chartData" :settings="settings" :mark-line="markLine"
-:mark-point="markPoint" :extend="extend" :toolbox="toolbox" :grid="grid" :xAxis="xAxis" :colors="chartColors">
-</ve-line>
+<div class="future-charts">
+    <ve-line :data="chartData" :settings="settings" :mark-line="markLine" :mark-point="markPoint" :extend="extend" :toolbox="toolbox" :grid="grid" :xAxis="xAxis" :colors="chartColors">
+    </ve-line>
+</div>
 </template>
 
 <script>
@@ -11,25 +12,35 @@ export default {
     name: "future-pre-chart",
     data() {
         this.settings = {
-            area: true,
-            stack: false,
-        },
-        this.markLine = {
-        data: [
-          {
-            name: '平均线',
-            type: 'average'
-          }
-        ]
-      }
-      this.markPoint = {
-        data: [
-          {
-            name: '最大值',
-            type: 'max'
-          }
-        ]
-      }
+                axisSite: {
+                    right: ['windSpeed']
+                },
+                area: true,
+                stack: false,
+                yAxisType: ['KMB', 'normal'],
+                yAxisName: ['功率', '风速'],
+                labelMap: {
+                    'power': '功率:W',
+                    'windSpeed': '风速:m/s'
+                },
+                legendName: {
+                    'power': "功率",
+                    'windSpeed': '风速'
+                },
+                
+            },
+            this.markLine = {
+                data: [{
+                    name: '平均线',
+                    type: 'average'
+                }]
+            }
+        this.markPoint = {
+            data: [{
+                name: '最大值',
+                type: 'max'
+            }]
+        }
         this.extend = {
             xAxis: {
                 type: 'time',
@@ -37,7 +48,7 @@ export default {
                 //     show: true,
                 //     rotate: 15 // 设置x轴标签旋转角度
                 // }
-                splitNumber: 12,
+                // splitNumber: 6,
                 // minInterval: 3600 * 15,
                 // maxInterval: 3600 * 1000,
             },
@@ -70,6 +81,7 @@ export default {
         this.toolbox = {
             show: true,
             top: 20,
+            left: "center",
             feature: {
                 dataZoom: {
                     yAxisIndex: "none"
@@ -88,33 +100,23 @@ export default {
 
         return {
             chartData: {
-                columns: ["fxTime", "power","windSpeed"],
+                columns: ["fxTime", "power", "windSpeed"],
                 rows: []
             }
         };
     },
     methods: {
-        getData(chartData){
+        getData(chartData) {
             console.log(chartData)
             console.log(chartData.rows)
             let rows = chartData.rows
             this.chartData.rows = rows
             console.log(this.chartData)
         }
-        // 获取当前经纬度下的所在地的未来24小时功率预测
-        // getPowerPreData(lat, lon) {
-        //     LocationPreApi.getFuturePreData(lat, lon).then((res) => {
-        //         console.log(res)
-        //         let chartData = res.data.hourly
-        //         this.chartData.rows = chartData
-        //         // this.chartData.columns = chartData.columns
-        //         console.log(this.chartData)
-        //     })
-        // }
     },
-    // created() {
-    //     this.chartData.rows = this.chartRows
-    //     console.log(this.chartData)
-    // }
 };
 </script>
+
+<style>
+
+</style>

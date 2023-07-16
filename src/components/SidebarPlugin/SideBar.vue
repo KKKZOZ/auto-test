@@ -89,6 +89,11 @@
             <!--Navigation-->
             <ul class="navbar-nav mb-md-3">
                 <li class="nav-item">
+                    <a class="nav-link" href="http://www.clypg.com.cn/" target="_blank">
+                        <i class="ni ni-support-16"></i> 龙源电力
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="https://www.in-en.com/" target="_blank">
                         <i class="ni ni-spaceship"></i> 国际能源网
                     </a>

@@ -1,5 +1,6 @@
 <template>
 <div>
+    <loading ref="loading"></loading>
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
     <div class="mt--4 mt-md--8  mb-4 text-right">
         <img src="../assets/start/third.svg" v-shared-element:markImage="{duration:'2s'}" height="100"  style="text-right">
@@ -166,6 +167,7 @@ import StatsCard from '@/components/Cards/StatsCard';
 import PowerRankTable from './HistoryData/PowerRankTable.vue';
 
 import historyDataApi from '../api/HistoryData'
+import Loading from '../components/Loading.vue';
 
 export default {
     components: {
@@ -174,6 +176,7 @@ export default {
         BaseProgress,
         StatsCard,
         PowerRankTable,
+        Loading,
         [DatePicker.name]: DatePicker,
     },
     data() {
@@ -265,6 +268,7 @@ export default {
                 console.log(res)
                 let Data = res.data.data
                 this.avgData = Data
+                this.$refs.loading.hide();
             })
         },
         // 日期选择

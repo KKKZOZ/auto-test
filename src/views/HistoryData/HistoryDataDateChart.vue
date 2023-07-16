@@ -21,7 +21,7 @@ export default {
                 },
                 xAxis: {
                     type: 'time',
-                    splitNumber: 10,
+                    // splitNumber: 10,
                     minInterval: 3600 * 15,
                     maxInterval: 3600 * 1000 * 30,
                 },

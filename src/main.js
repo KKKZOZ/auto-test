@@ -18,15 +18,12 @@ import Vue from 'vue';
 import DashboardPlugin from './plugins/dashboard-plugin';
 import App from './App.vue';
 import VCharts from 'v-charts'
-// import VCharts from 'v-charts-x'
-Vue.use(VCharts)
-
 import BaiduMap from 'vue-baidu-map'
 
 Vue.use(BaiduMap, {
   ak: 'QBdl4bnuDVgAchd3AoohXPKLe2FooIcV'
 })
-// Vue.use(VCharts)
+Vue.use(VCharts)
 
 import "./assets/open.css"
 import VueKinesis from 'vue-kinesis'
