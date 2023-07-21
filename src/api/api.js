@@ -13,8 +13,7 @@ const API = {
 
 // 封装不同的接口请求方法
 export const getEndpointData = (userData) => {
-  return axios.get(`${API.baseURL}/all-turbs/get-all`, 
-  { 
+  return axios.get(`${API.baseURL}/all-turbs/get-all`, {
     headers: API.headers,
     params: userData
     });
