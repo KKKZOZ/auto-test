@@ -1,6 +1,6 @@
 <template>
 <b-card body-class="p-0" header-class="border-0 bg-transparent">
-    <ve-line :data="chartData" :settings="settings" :extend="extend" :toolbox="toolbox" :grid="grid" :xAxis="xAxis" :xAxisType="'time'" :colors="chartColors">
+    <ve-line :data="chartData" :settings="settings" :extend="extend" :toolbox="toolbox" :grid="grid" :xAxis="xAxis" :xAxisType="'time'">
     </ve-line>
 </b-card>
 </template>
@@ -16,6 +16,7 @@ export default {
                 stack: false,
             },
             this.extend = {
+                color : ["#ABDCFF",'#91cc75','#5470c6',  '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc',],
                 grid: {
                     show: false
                 },
@@ -51,7 +52,7 @@ export default {
             show: false
         };
         // 十个颜色
-        this.chartColors = ["#ABDCFF", "#0396FF", "#A5DEE4", "#FFD8C9", "#FFBFBF", "#FFD6E7", "#FFD6E7", "#FFD6E7", "#FFD6E7", "#FFD6E7"];
+        // this.chartColors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc',"#ABDCFF"];
         this.toolbox = {
             show: true,
             top: 20,

@@ -59,11 +59,7 @@ export default {
     methods: {
         // 获取当前经纬度下的所在地的未来24小时功率预测
         getData(chartData) {
-            console.log(chartData)
-            console.log(chartData.rows)
             var powerPreData = JSON.parse(JSON.stringify(chartData))
-            // this.chartData.rows = powerPreData.rows
-            // this.chartData = JSON.parse(JSON.stringify(chartData))
             console.log(powerPreData)
             // 将chartData.rows中的fxTime转换为HH:mm格式
             for (let i = 0; i < powerPreData.rows.length; i++) {

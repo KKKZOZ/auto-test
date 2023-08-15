@@ -23,4 +23,16 @@ export default {
             location: lon + ',' + lat
         }
     })
-  }}
+  },
+
+  getCityName(lat, lon) {
+    return request({
+        url: '/mapPre/mapInfo',
+        method: 'get',
+        params: {
+            lat: lat,
+            lon: lon
+        }
+    })
+    }
+}

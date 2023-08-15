@@ -36,19 +36,7 @@ export default {
                 restore: {},
                 saveAsImage: {}
             }
-        };
-        this.legend = {};
-        this.xAxis = {};
-        this.yAxis = {};
-        this.radar = {};
-        this.tooltip = {};
-        this.axisPointer = {};
-        this.brush = {};
-        this.geo = {};
-        this.timeline = {};
-        this.graphic = {};
-        this.series = {};
-        this.textStyle = {};
+        }
         return {
             chartData: {
                 columns: [],
