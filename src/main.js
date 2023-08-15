@@ -46,6 +46,15 @@ router.beforeEach(SharedElementRouteGuard)
 import VWave from 'v-wave'
 
 Vue.use(VWave)
+
+import Print from 'vue-print-nb'
+Vue.use(Print)
+
+import downloadHtmlToPdf from '@/util/downloadHtmlToPdf'
+Vue.use(downloadHtmlToPdf)
+import downloadHtmlToPdf_copy from '@/util/downloadHtmlToPdf_copy'
+Vue.use(downloadHtmlToPdf_copy)
+
 // plugin setup
 Vue.use(DashboardPlugin);
 
